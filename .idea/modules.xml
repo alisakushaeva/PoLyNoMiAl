@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Convertation/Convertation.iml" filepath="$PROJECT_DIR$/Convertation/Convertation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Graphics/Graphics.iml" filepath="$PROJECT_DIR$/Graphics/Graphics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Poly2022.0.iml" filepath="$PROJECT_DIR$/Poly2022.0.iml" />
+    </modules>
+  </component>
+</project>
