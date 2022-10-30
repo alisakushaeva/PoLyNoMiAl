@@ -19,6 +19,10 @@ public class GraphicsPanel extends JPanel {
         if (!this.p.contains(p)) this.p.add(p);
         repaint();
     }
+    public void addPainterToTheEnd(Painter p){
+        this.p.add(p);
+        repaint();
+    }
     public void removePainter(Painter p){
         this.p.remove(p);
         repaint();

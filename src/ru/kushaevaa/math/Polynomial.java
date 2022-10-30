@@ -1,6 +1,6 @@
 package ru.kushaevaa.math;
 
-public class Polynomial {
+public class Polynomial implements Function{
     protected double[] coeff;//массив коэффициентов
     public static final double EPS = 1e-50;
 

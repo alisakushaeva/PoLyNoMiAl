@@ -3,6 +3,9 @@ package ru.kushaevaa.gui;
 import ru.kushaevaa.Converter;
 import ru.kushaevaa.graphics.*;
 import ru.kushaevaa.graphics.Painter;
+import ru.kushaevaa.math.Function;
+import ru.kushaevaa.math.Newton;
+import ru.kushaevaa.math.Polynomial;
 
 import javax.swing.*;
 import java.awt.*;
@@ -124,8 +127,12 @@ public class MainWindow extends JFrame {
         var pnts = new PointsPainter(cnv, p, clr1.getBackground(), ch1.isSelected());
         //dpnts = new PointsPainter(cnv, p, clr1.getBackground(), ch1.isSelected());
 
-        var fpnts = new FunctionPainter(cnv, p, clr2.getBackground(), ch2.isSelected());
-        var dfpnts = new DerivativePainter(cnv, p, clr3.getBackground(), ch3.isSelected());
+        //var fpnts = new FunctionPainter(cnv, p, clr2.getBackground(), ch2.isSelected());
+        //var dfpnts = new DerivativePainter(cnv, p, clr3.getBackground(), ch3.isSelected());
+
+        Newton f = new Newton(new HashMap<Double, Double>());
+        var fpnts = new FunctionPainter(cnv, f, clr2.getBackground(), ch2.isSelected());
+        var dfpnts = new FunctionPainter(cnv, f.derivative(), clr3.getBackground(), ch3.isSelected());
 
         //событие, добавляющее точки в р
         mainPanel.addMouseListener(new MouseAdapter() {
@@ -137,13 +144,16 @@ public class MainWindow extends JFrame {
                     if (p.size() == 0) {
                         p.put(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
                         pnts.addPoint(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
-                        fpnts.setPoints(p);
-                        dfpnts.setPoints(p);
+                        f.addNode(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
+                        fpnts.setF(f);
+                        dfpnts.setF(f.derivative());
+                        //fpnts.setPoints(p);
+                        //dfpnts.setPoints(p);
                         //pts.add(pnts);
                         //pts.add(fpnts);
-                        if(ch1.isSelected()) mainPanel.addPainter(pnts);
                         if(ch2.isSelected()) mainPanel.addPainter(fpnts);
                         if(ch3.isSelected()) mainPanel.addPainter(dfpnts);
+                        if(ch1.isSelected()) mainPanel.addPainter(pnts);
                     }
                     //тут добавляем только при условии, что точка не помещается в полосу
                     for (double x : p.keySet()) {
@@ -155,13 +165,16 @@ public class MainWindow extends JFrame {
                     p.put(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
                     pnts.addPoint(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
                     //fpnts.setPoints(p);
-                    fpnts.addPoint(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
-                    dfpnts.setPoints(p);
+                    f.addNode(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
+                    fpnts.setF(f);
+                    dfpnts.setF(f.derivative());
+                    //fpnts.addPoint(cnv.xScr2Crt(e.getX()), cnv.yScr2Crt(e.getY()));
+                    //dfpnts.setPoints(p);
                     //pts.add(pnts);
                     //pts.add(fpnts);
-                    if(ch1.isSelected()) mainPanel.addPainter(pnts);
                     if(ch2.isSelected()) mainPanel.addPainter(fpnts);
                     if(ch3.isSelected()) mainPanel.addPainter(dfpnts);
+                    if(ch1.isSelected()) mainPanel.addPainter(pnts);
                 }
                 //если нажата пкм
                 else {
@@ -179,12 +192,15 @@ public class MainWindow extends JFrame {
                     for (double x : dp.keySet()) {
                         p.remove(x, dp.get(x));
                     }
-                    fpnts.setPoints(p);
-                    dfpnts.setPoints(p);
+                    Newton f = new Newton(p);
+                    fpnts.setF(f);
+                    dfpnts.setF(f.derivative());
+                    //fpnts.setPoints(p);
+                    //dfpnts.setPoints(p);
                     //mainPanel.removePainter(dpnts);
-                    if(ch1.isSelected()) mainPanel.addPainter(pnts);
                     if(ch2.isSelected()) mainPanel.addPainter(fpnts);
                     if(ch3.isSelected()) mainPanel.addPainter(dfpnts);
+                    if(ch1.isSelected()) mainPanel.addPainter(pnts);
                 }
             }
         });
@@ -243,6 +259,10 @@ public class MainWindow extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 if(ch2.isSelected()){
                     mainPanel.addPainter(fpnts);
+                    if(ch1.isSelected()) {
+                        mainPanel.addPainterToTheEnd(pnts);
+                        mainPanel.removePainter(pnts);
+                    }
                 }
                 else mainPanel.removePainter(fpnts);
             }
@@ -252,21 +272,15 @@ public class MainWindow extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 if(ch3.isSelected()){
                     mainPanel.addPainter(dfpnts);
+                    if(ch1.isSelected()) {
+                        mainPanel.addPainterToTheEnd(pnts);
+                        mainPanel.removePainter(pnts);
+                    }
                 }
                 else mainPanel.removePainter(dfpnts);
             }
         });
 
-        /*ch1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if(ch1.isSelected()){
-                    mainPanel.addPainter(pnts);
-                }
-                else mainPanel.removePainter(pnts);
-            }
-        });*/
 
         gl.setHorizontalGroup(gl.createSequentialGroup()
                 .addGap(8)

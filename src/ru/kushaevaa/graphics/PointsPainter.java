@@ -26,7 +26,7 @@ public class PointsPainter implements Painter {
             for (Map.Entry<Double, Double> point : points.entrySet()) {
                 int x = cnv.xCrt2Scr(point.getKey());
                 int y = cnv.yCrt2Scr(point.getValue());
-                g.fillOval(x, y, 4, 4);
+                g.fillOval(x-3, y-3, 6, 6);
             }
         }
     }
